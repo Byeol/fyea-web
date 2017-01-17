@@ -1,3 +1,15 @@
-<h1>
-  {{title}}
-</h1>
+<header>
+  <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+    <a class="navbar-brand" routerLink="">{{ title }}</a>
+    <div>
+      <ul class="navbar-nav">
+        <li *ngFor="let item of navItems" routerLinkActive="active" class="nav-item">
+          <a [routerLink]="[item.link]" class="nav-link">{{ item.name }}</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+<main class="p-4">
+  <router-outlet></router-outlet>
+</main>

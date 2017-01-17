@@ -1,0 +1,93 @@
+import { Injectable } from '@angular/core';
+import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@angular/http';
+
+import 'rxjs/add/operator/toPromise';
+
+import { CodeMap } from './model/codeMap';
+import { QueryModel } from './model/queryModel';
+import { StatisticsData } from './model/statisticsData';
+import { ChartData } from './model/chartModel';
+
+import { codeMapUrl, statsUrl } from '../api-config';
+import { ApiService } from '../core/api.service';
+
+@Injectable()
+export class StatsService {
+  constructor(private http: Http, private apiService: ApiService) { }
+
+  getCodeMap(): Promise<CodeMap> {
+    const options = new RequestOptions({
+      headers: this.headers,
+    });
+
+    return this.http
+      .get(codeMapUrl, options)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  }
+
+  queryStats(queryModel: QueryModel): Promise<StatisticsData> {
+    const options = new RequestOptions({
+      headers: this.headers,
+    });
+
+    return this.http
+      .post(statsUrl, JSON.stringify(queryModel), options)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  }
+
+  exportStats(queryModel: QueryModel): Promise<Response> {
+    const options = new RequestOptions({
+      headers: this.headers,
+      responseType: ResponseContentType.Blob
+    });
+
+    return this.http
+      .post(`${statsUrl}/export`, JSON.stringify(queryModel), options)
+      .map(this.extractContent)
+      .map(this.downloadFile)
+      .toPromise()
+      .catch(this.handleError);
+  }
+
+  queryChart(chartData: ChartData): Promise<Response> {
+    const options = new RequestOptions({
+      headers: this.headers,
+      responseType: ResponseContentType.Blob
+    });
+
+    return this.http
+      .post(`${statsUrl}/chart`, JSON.stringify(chartData), options)
+      .map(this.extractContent)
+      .map(this.downloadFile)
+      .toPromise()
+      .catch(this.handleError);
+  }
+
+  get headers(): Headers {
+    const headers = new Headers({
+      'Content-Type': 'application/json'
+    });
+
+    this.apiService.updateHeader(headers);
+    return headers;
+  }
+
+  private extractContent(res: Response) {
+    const blob: Blob = res.blob();
+    return blob;
+  }
+
+  private downloadFile(blob: Blob) {
+    const url = window.URL.createObjectURL(blob);
+    window.open(url);
+  }
+
+  private handleError(error: any): Promise<any> {
+    console.error('An error occurred', error);
+    return Promise.reject(error.message || error);
+  }
+}

@@ -1,0 +1,19 @@
+<form (ngSubmit)="onSubmit()">
+  <md-card-title class="mt-3">조회 결과</md-card-title>
+  <md-card-content>
+    <div class="form-group float-sm-right">
+      <select [(ngModel)]="chart.type" name="chartType" class="custom-select">
+        <option *ngFor="let item of chartTypes | keys" [ngValue]="item.key">{{ item.value }}</option>
+      </select>
+      <label class="custom-control custom-checkbox">
+        <input type="checkbox" [(ngModel)]="stacked" name="chartStacked" class="custom-control-input">
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description">누적</span>
+      </label>
+    </div>
+    <canvas baseChart [datasets]="chart.data.datasets" [labels]="chart.data.labels" [chartType]="chart.type" [options]="chart.options"></canvas>
+  </md-card-content>
+  <md-card-actions class="mx-auto">
+    <button class="float-sm-right" type="submit" md-raised-button color="primary">내보내기</button>
+  </md-card-actions>
+</form>

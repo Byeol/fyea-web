@@ -1,0 +1,42 @@
+<app-alert *ngIf="alert" [data]="alert"></app-alert>
+
+<div *ngIf="codeMap">
+  <md-card>
+    <md-tab-group>
+      <md-tab label="조회조건 선택">
+        <form (ngSubmit)="onSubmit()" #queryForm="ngForm">
+          <md-card-title class="mt-3">조회조건 선택</md-card-title>
+          <md-card-content>
+            <div class="form-group">
+              <label for="condition">조회 조건</label>
+              <select id="condition" class="form-control" [(ngModel)]="model.condition" name="condition" required>
+                <option *ngFor="let item of personalInfo | keys" [ngValue]="item.key">{{ item.value }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="surveys">설문 선택</label>
+              <select id="surveys" class="form-control" [(ngModel)]="model.surveys" multiple name="surveys" required>
+                <optgroup *ngFor="let entry of surveyMap | mapEntries" [label]="surveyInfo[entry.key]">
+                  <option *ngFor="let item of entry.value" [ngValue]="item.key">{{ item.value }}</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="id-starts-with">조회 대상 학번</label>
+              <input class="form-control" [(ngModel)]="model.idStartsWith" name="idStartsWith">
+            </div>
+          </md-card-content>
+          <md-card-actions class="mx-auto">
+            <button class="float-sm-right" type="submit" md-raised-button [disabled]="!queryForm.form.valid" color="primary">조회</button>
+          </md-card-actions>
+        </form>
+      </md-tab>
+      <md-tab *ngIf="dataQueried" label="조회 결과">
+        <app-stats-result [chart]="chart" [stacked]="stacked" (before)="handleBefore()" (success)="handleSuccess()" (error)="handleError()"></app-stats-result>
+      </md-tab>
+      <md-tab *ngIf="dataQueried" label="내보내기">
+        <app-stats-export [model]="model" [chart]="chart" [codeMap]="codeMap" (before)="handleBefore()" (success)="handleSuccess()" (error)="handleError()"></app-stats-export>
+      </md-tab>
+    </md-tab-group>
+  </md-card>
+</div>

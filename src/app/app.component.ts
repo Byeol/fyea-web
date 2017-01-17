@@ -6,5 +6,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app works!';
+  title = 'FYEA';
+
+  navItems = [
+    {
+      name: '데이터 관리',
+      link: 'data'
+    },
+    {
+      name: '설문결과 조회',
+      link: 'stats'
+    }
+  ];
 }
