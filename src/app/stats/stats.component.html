@@ -32,7 +32,7 @@
         </form>
       </md-tab>
       <md-tab *ngIf="dataQueried" label="조회 결과">
-        <app-stats-result [chart]="chart" [stacked]="stacked" (before)="handleBefore()" (success)="handleSuccess()" (error)="handleError()"></app-stats-result>
+        <app-stats-result [chart]="chart" [stack]="stacked" (before)="handleBefore()" (success)="handleSuccess()" (error)="handleError()"></app-stats-result>
       </md-tab>
       <md-tab *ngIf="dataQueried" label="내보내기">
         <app-stats-export [model]="model" [chart]="chart" [codeMap]="codeMap" (before)="handleBefore()" (success)="handleSuccess()" (error)="handleError()"></app-stats-export>

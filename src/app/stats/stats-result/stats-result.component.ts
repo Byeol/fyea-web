@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 
 import { StatsService } from '../stats.service';
 import { BarChart, LineChart, Chart, ChartData } from '../model/chartModel';
@@ -7,9 +7,9 @@ import { BarChart, LineChart, Chart, ChartData } from '../model/chartModel';
   selector: 'app-stats-result',
   templateUrl: './stats-result.component.html'
 })
-export class StatsResultComponent {
+export class StatsResultComponent implements OnInit {
   @Input() chart: Chart;
-  @Input() stacked;
+  @Input() stack: boolean;
 
   @Output() before = new EventEmitter();
   @Output() success = new EventEmitter();
@@ -20,12 +20,36 @@ export class StatsResultComponent {
     bar: '세로 막대형'
   };
 
+  _stacked: boolean;
+
   constructor(private statsService: StatsService) { }
+
+  ngOnInit() {
+    this.stacked = this.stack;
+  }
 
   onSubmit() {
     this.before.emit();
     this.statsService.queryChart(this.chart.data)
       .then(() => this.success.emit())
       .catch(() => this.error.emit());
+  }
+
+  get stacked() {
+    return this._stacked;
+  }
+
+  set stacked(value: boolean) {
+    this._stacked = value;
+    this.chart.options = {
+      scales: {
+          xAxes: [{
+              stacked: value
+          }],
+          yAxes: [{
+              stacked: value
+          }]
+      }
+    };
   }
 }

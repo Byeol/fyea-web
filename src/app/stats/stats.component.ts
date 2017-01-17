@@ -28,7 +28,7 @@ export class StatsComponent implements OnInit {
   dataQueried: boolean;
 
   surveyMap: Map<String, Array<KeyValueItem>>;
-  _stacked: boolean;
+  stacked: boolean;
 
   alert: AlertData;
 
@@ -142,24 +142,6 @@ export class StatsComponent implements OnInit {
       label: surveyAnswerMap.codeMap.records[key] || key,
       data: frequencyMap[key].map((x, idx) => x / totalN[idx] * 100)
     }));
-  }
-
-  get stacked() {
-    return this._stacked;
-  }
-
-  set stacked(value: boolean) {
-    this._stacked = value;
-    this.chart.options = {
-      scales: {
-          xAxes: [{
-              stacked: value
-          }],
-          yAxes: [{
-              stacked: value
-          }]
-      }
-    };
   }
 
   asArray(map: Object) {
