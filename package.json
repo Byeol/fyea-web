@@ -11,7 +11,7 @@
     "pree2e": "webdriver-manager update --standalone false --gecko false",
     "e2e": "protractor",
     "build": "ng build --prod --aot",
-    "preelectron": "cp -a electron/. dist",
+    "preelectron": "node electron.js",
     "electron": "electron dist",
     "prepackage": "npm run build && npm run preelectron",
     "package": "electron-packager dist --out=dist-app --overwrite"
@@ -46,6 +46,7 @@
     "codelyzer": "~2.0.0-beta.1",
     "electron": "^1.4.14",
     "electron-packager": "^8.5.0",
+    "fs-extra": "^2.0.0",
     "jasmine-core": "2.5.2",
     "jasmine-spec-reporter": "2.5.0",
     "karma": "1.2.0",
