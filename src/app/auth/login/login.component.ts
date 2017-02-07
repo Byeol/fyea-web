@@ -15,11 +15,14 @@ import { AlertData } from '../../shared/alert/alert-type';
 
 export class LoginComponent {
   model: QueryModel = new QueryModel();
+
+  isLoading = false;
   alert: AlertData;
 
   constructor(private apiService: ApiService, private authService: AuthService, private router: Router) { }
 
   onSubmit() {
+    this.isLoading = true;
     this.apiService.login(this.model)
       .then(status => {
         if (!status) {
@@ -40,6 +43,7 @@ export class LoginComponent {
       type: 'success',
       message: '로그인에 성공했습니다!'
     };
+    this.isLoading = false;
   }
 
   private handleError(): void {
@@ -47,5 +51,6 @@ export class LoginComponent {
       type: 'danger',
       message: '로그인에 실패했습니다.'
     };
+    this.isLoading = false;
   }
 }

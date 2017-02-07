@@ -11,6 +11,8 @@ import { KeysPipe } from './keys.pipe';
 import { MapEntriesPipe } from './map-entries.pipe';
 import { AlertComponent } from './alert/alert.component';
 import { MdOptGroup } from './md-opt-group/opt-group';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { OverlayDirective } from './overlay.directive';
 
 @NgModule({
   imports: [
@@ -25,7 +27,9 @@ import { MdOptGroup } from './md-opt-group/opt-group';
     KeysPipe,
     MapEntriesPipe,
     AlertComponent,
-    MdOptGroup
+    MdOptGroup,
+    OverlayDirective,
+    SpinnerComponent
   ],
   exports: [
     CommonModule,
@@ -37,7 +41,8 @@ import { MdOptGroup } from './md-opt-group/opt-group';
     NgbModule,
     ChartsModule,
     AlertComponent,
-    MdOptGroup
+    MdOptGroup,
+    SpinnerComponent
   ]
 })
 export class SharedModule { }

@@ -30,6 +30,7 @@ export class StatsComponent implements OnInit {
   surveyMap: Map<String, Array<KeyValueItem>>;
   stacked: boolean;
 
+  isLoading = false;
   alert: AlertData;
 
   constructor(private statsService: StatsService) { }
@@ -160,14 +161,17 @@ export class StatsComponent implements OnInit {
   }
 
   handleBefore(): void {
-    this.alert = AlertType.loading;
+    this.alert = null;
+    this.isLoading = true;
   }
 
   handleSuccess(): void {
     this.alert = null;
+    this.isLoading = false;
   }
 
   handleError(): void {
     this.alert = AlertType.error;
+    this.isLoading = false;
   }
 }

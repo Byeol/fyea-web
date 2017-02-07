@@ -7,18 +7,21 @@ import { AlertData, AlertType } from '../shared/alert/alert-type';
   templateUrl: './data.component.html'
 })
 export class DataComponent {
-
+  isLoading = false;
   alert: AlertData;
 
   handleBefore(): void {
-    this.alert = AlertType.loading;
+    this.alert = null;
+    this.isLoading = true;
   }
 
   handleSuccess(): void {
     this.alert = AlertType.success;
+    this.isLoading = false;
   }
 
   handleError(): void {
     this.alert = AlertType.error;
+    this.isLoading = false;
   }
 }
