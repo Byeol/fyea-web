@@ -25,11 +25,11 @@ export class StatsComponent implements OnInit {
   availableYears: Number[];
   codeMap: CodeMap;
   chart: Chart;
-  targetData: string = 'mean';
-  dataQueried: boolean;
-
+  targetData = 'mean';
+  _statsData: StatisticsData;
   surveyMap: Map<String, Array<KeyValueItem>>;
   stacked: boolean;
+  alternative = true;
 
   isLoading = false;
   alert: AlertData;
@@ -99,13 +99,11 @@ export class StatsComponent implements OnInit {
   }
 
   async onSubmit() {
-    this.dataQueried = false;
     this.handleBefore();
+    this.statsData = null;
 
     try {
-      const stats = await this.statsService.queryStats(this.model);
-      this.createChart(stats);
-      this.dataQueried = true;
+      this.statsData = await this.statsService.queryStats(this.model);
     } catch (e) {
       this.handleError();
     } finally {
@@ -113,48 +111,85 @@ export class StatsComponent implements OnInit {
     }
   }
 
-  createChart(data: StatisticsData): void {
+  get statsData() {
+    return this._statsData;
+  }
+
+  set statsData(value) {
+    this._statsData = value;
+    this.chart = this.createChart(this.statsData, this.alternative);
+  }
+
+  get isFrequencyAvailable() {
+    return this.model.surveys && this.model.surveys.length === 1;
+  }
+
+  createChart(data: StatisticsData, alternative: boolean): Chart {
+    if (data === null || data === undefined) {
+      return null;
+    }
+
     if (data.hasOwnProperty('frequencyMap')) {
-      this.createFrequencyChart(data as FrequencyStatisticsData);
-      return;
+      return this.createFrequencyChart(data as FrequencyStatisticsData);
     }
 
     if (data.hasOwnProperty('statisticsMap')) {
-      this.createStatisticsChart(data as DescriptiveStatisticsData);
-      return;
+      if (alternative) {
+        return this.createAlternativeStatisticsChart(data as DescriptiveStatisticsData);
+      }
+
+      return this.createStatisticsChart(data as DescriptiveStatisticsData);
     }
   }
 
-  createStatisticsChart({ statisticsMap }): void {
-    this.chart = new LineChart();
-    this.chart.data = {
+  createAlternativeStatisticsChart({ statisticsMap }): LineChart {
+    const chart = new LineChart();
+    chart.data = {
+      labels: Object.keys(statisticsMap),
+      datasets: []
+    };
+
+    this.model.surveys.map(key => this.surveyInfo[key]).forEach((label, idx) => chart.data.datasets.push({
+      fill: false,
+      label: label,
+      data: chart.data.labels.map(key => statisticsMap[key][idx][this.targetData])
+    }));
+
+    return chart;
+  }
+
+  createStatisticsChart({ statisticsMap }): LineChart {
+    const chart = new LineChart();
+    chart.data = {
       labels: this.model.surveys.map(key => this.surveyInfo[key]),
       datasets: []
     };
-    this.stacked = false;
 
-    Object.keys(statisticsMap).forEach(key => this.chart.data.datasets.push({
+    Object.keys(statisticsMap).forEach(key => chart.data.datasets.push({
       fill: false,
       label: key,
       data: statisticsMap[key].map(x => x[this.targetData])
     }));
+
+    return chart;
   }
 
-  createFrequencyChart({ frequencyMap, conditionAnswerMap, surveyAnswerMap }) {
-    this.chart = new BarChart();
-    this.chart.data = {
+  createFrequencyChart({ frequencyMap, conditionAnswerMap, surveyAnswerMap }): BarChart {
+    const chart = new BarChart();
+    chart.data = {
       labels: conditionAnswerMap.answers,
       datasets: []
     };
-    this.stacked = true;
 
     const totalN = this.getTotalN(this.asArray(frequencyMap));
 
-    Object.keys(frequencyMap).filter(Boolean).forEach(key => this.chart.data.datasets.push({
+    Object.keys(frequencyMap).filter(Boolean).forEach(key => chart.data.datasets.push({
       fill: false,
       label: surveyAnswerMap.codeMap.records[key] || key,
       data: frequencyMap[key].map((x, idx) => x / totalN[idx] * 100)
     }));
+
+    return chart;
   }
 
   asArray(map: Object) {
@@ -172,16 +207,16 @@ export class StatsComponent implements OnInit {
     }, []);
   }
 
-  private handleBefore(): void {
+  handleBefore(): void {
     this.alert = null;
     this.isLoading = true;
   }
 
-  private handleAfter(): void {
+  handleAfter(): void {
     this.isLoading = false;
   }
 
-  private handleError(): void {
+  handleError(): void {
     this.alert = AlertType.error;
   }
 }
