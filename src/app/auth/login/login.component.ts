@@ -21,20 +21,35 @@ export class LoginComponent {
 
   constructor(private apiService: ApiService, private authService: AuthService, private router: Router) { }
 
-  onSubmit() {
-    this.isLoading = true;
-    this.apiService.login(this.model)
-      .then(status => {
-        if (!status) {
-          return this.handleError();
-        }
+  async onSubmit() {
+    this.handleBefore();
 
-        this.handleSuccess();
-      });
+    try {
+      const status = await this.apiService.login(this.model);
+
+      if (!status) {
+        throw new Error();
+      }
+
+      this.handleSuccess();
+    } catch (e) {
+      this.handleError();
+    } finally {
+      this.handleAfter();
+    }
   }
 
   get isAuthenticated() {
     return this.authService.isAuthenticated;
+  }
+
+  private handleBefore(): void {
+    this.alert = null;
+    this.isLoading = true;
+  }
+
+  private handleAfter(): void {
+    this.isLoading = false;
   }
 
   private handleSuccess() {
@@ -43,7 +58,6 @@ export class LoginComponent {
       type: 'success',
       message: '로그인에 성공했습니다!'
     };
-    this.isLoading = false;
   }
 
   private handleError(): void {
@@ -51,6 +65,5 @@ export class LoginComponent {
       type: 'danger',
       message: '로그인에 실패했습니다.'
     };
-    this.isLoading = false;
   }
 }

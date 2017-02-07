@@ -17,10 +17,8 @@ export class DataImportComponent implements OnInit {
 
   constructor(private dataService: DataService) { }
 
-  ngOnInit() {
-    this.dataService.getStorage().then(files => {
-      this.files = files;
-    });
+  async ngOnInit() {
+    this.files = await this.dataService.getStorage();
   }
 
   onSubmit() {

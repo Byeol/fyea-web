@@ -36,18 +36,21 @@ export class StatsComponent implements OnInit {
 
   constructor(private statsService: StatsService) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.handleBefore();
 
-    this.statsService.getCodeMap().then(codeMap => {
+    try {
+      const codeMap = await this.statsService.getCodeMap();
       this.codeMap = this.updateCodeMap(codeMap);
       this.surveyMap = this.createSurveyMap(this.toArray(this.surveyInfo));
-    }).then(this.handleSuccess.bind(this))
-    .catch(this.handleError.bind(this));
 
-    this.statsService.getAnswerMap('ADMISSION_YEAR').then(answerMap => {
+      const answerMap = await this.statsService.getAnswerMap('ADMISSION_YEAR');
       this.availableYears = answerMap.answers;
-    });
+    } catch (e) {
+      this.handleError();
+    } finally {
+      this.handleAfter();
+    }
   }
 
   updateCodeMap(codeMap: CodeMap): CodeMap {
@@ -95,15 +98,19 @@ export class StatsComponent implements OnInit {
     return this.codeMap.surveyInfo.records;
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.dataQueried = false;
     this.handleBefore();
 
-    this.statsService.queryStats(this.model)
-      .then(this.createChart.bind(this))
-      .then(() => this.dataQueried = true)
-      .then(this.handleSuccess.bind(this))
-      .catch(this.handleError.bind(this));
+    try {
+      const stats = await this.statsService.queryStats(this.model);
+      this.createChart(stats);
+      this.dataQueried = true;
+    } catch (e) {
+      this.handleError();
+    } finally {
+      this.handleAfter();
+    }
   }
 
   createChart(data: StatisticsData): void {
@@ -165,18 +172,16 @@ export class StatsComponent implements OnInit {
     }, []);
   }
 
-  handleBefore(): void {
+  private handleBefore(): void {
     this.alert = null;
     this.isLoading = true;
   }
 
-  handleSuccess(): void {
-    this.alert = null;
+  private handleAfter(): void {
     this.isLoading = false;
   }
 
-  handleError(): void {
+  private handleError(): void {
     this.alert = AlertType.error;
-    this.isLoading = false;
   }
 }
