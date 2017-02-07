@@ -1,23 +1,15 @@
 <form (ngSubmit)="onSubmit()" #queryForm="ngForm">
   <md-card-title class="mt-3">데이터 가져오기</md-card-title>
   <md-card-content>
-    <p>Excel 파일에서 데이터를 가져옵니다.</p>
-    <div class="form-group">
-      <label for="data-file">데이터 파일</label>
-      <select id="data-file" class="form-control" [(ngModel)]="model.dataFile" name="dataFile" required>
-        <option *ngFor="let file of files" [ngValue]="file">{{ file }}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="code-map-file">코드북 파일</label>
-      <select id="code-map-file" class="form-control" [(ngModel)]="model.codeMapFile" name="codeMapFile" required>
-        <option *ngFor="let file of files" [ngValue]="file">{{ file }}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="password">데이터 파일 암호</label>
-      <input class="form-control" [(ngModel)]="model.password" name="password" type="password">
-    </div>
+    <md-select class="w-100 my-3" placeholder="데이터 파일" [(ngModel)]="model.dataFile" name="dataFile" required>
+      <md-option *ngFor="let file of files" [value]="file">{{ file }}</md-option>
+    </md-select>
+    <md-select class="w-100 my-3" placeholder="코드북 파일" [(ngModel)]="model.codeMapFile" name="codeMapFile" required>
+      <md-option *ngFor="let file of files" [value]="file">{{ file }}</md-option>
+    </md-select>
+    <md-input-container class="w-100 my-2">
+      <input mdInput placeholder="데이터 파일 암호" [(ngModel)]="model.password" name="password" type="password">
+    </md-input-container>
   </md-card-content>
   <md-card-actions class="mx-auto">
     <button class="float-sm-right" type="submit" md-raised-button [disabled]="!queryForm.form.valid" color="primary">가져오기</button>
