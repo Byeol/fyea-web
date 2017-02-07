@@ -1,5 +1,6 @@
 import { environment } from '../environments/environment';
 
+export const answerMapUrl = `${environment.baseUrl}/answerMaps`;
 export const codeMapUrl = `${environment.baseUrl}/codeMaps/default`;
 export const statsUrl = `${environment.baseUrl}/stats`;
 export const storageUrl = `${environment.baseUrl}/storage`;

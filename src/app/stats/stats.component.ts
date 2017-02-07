@@ -22,6 +22,7 @@ export class KeyValueItem {
 export class StatsComponent implements OnInit {
   model: QueryModel = new QueryModel();
 
+  availableYears: Number[];
   codeMap: CodeMap;
   chart: Chart;
   targetData: string = 'mean';
@@ -43,6 +44,10 @@ export class StatsComponent implements OnInit {
       this.surveyMap = this.createSurveyMap(this.toArray(this.surveyInfo));
     }).then(this.handleSuccess.bind(this))
     .catch(this.handleError.bind(this));
+
+    this.statsService.getAnswerMap('ADMISSION_YEAR').then(answerMap => {
+      this.availableYears = answerMap.answers;
+    });
   }
 
   updateCodeMap(codeMap: CodeMap): CodeMap {

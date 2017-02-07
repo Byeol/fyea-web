@@ -3,17 +3,30 @@ import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@a
 
 import 'rxjs/add/operator/toPromise';
 
+import { AnswerMap } from './model/answerMap';
 import { CodeMap } from './model/codeMap';
 import { QueryModel } from './model/queryModel';
 import { StatisticsData } from './model/statisticsData';
 import { ChartData } from './model/chartModel';
 
-import { codeMapUrl, statsUrl } from '../api-config';
+import { answerMapUrl, codeMapUrl, statsUrl } from '../api-config';
 import { ApiService } from '../core/api.service';
 
 @Injectable()
 export class StatsService {
   constructor(private http: Http, private apiService: ApiService) { }
+
+  getAnswerMap(id: string): Promise<AnswerMap> {
+    const options = new RequestOptions({
+      headers: this.headers,
+    });
+
+    return this.http
+      .get(`${answerMapUrl}/${id}`, options)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  }
 
   getCodeMap(): Promise<CodeMap> {
     const options = new RequestOptions({
