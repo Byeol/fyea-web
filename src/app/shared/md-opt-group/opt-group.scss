@@ -1,0 +1,22 @@
+$md-option-padding: 16px;
+$md-baseline-grid: 8px;
+
+md-opt-group,
+.md-opt-group {
+  display: block;
+
+  label {
+    display: block;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding: $md-baseline-grid * 2;
+    font-weight: 500;
+    margin: 0;
+    color: rgba(117,117,117,0.87);
+  }
+
+  md-option {
+    $padding: $md-option-padding * 2;
+    padding: 0 $padding;
+  }
+}

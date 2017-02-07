@@ -10,6 +10,7 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { KeysPipe } from './keys.pipe';
 import { MapEntriesPipe } from './map-entries.pipe';
 import { AlertComponent } from './alert/alert.component';
+import { MdOptGroup } from './md-opt-group/opt-group';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { AlertComponent } from './alert/alert.component';
   declarations: [
     KeysPipe,
     MapEntriesPipe,
-    AlertComponent
+    AlertComponent,
+    MdOptGroup
   ],
   exports: [
     CommonModule,
@@ -34,7 +36,8 @@ import { AlertComponent } from './alert/alert.component';
     FlexLayoutModule,
     NgbModule,
     ChartsModule,
-    AlertComponent
+    AlertComponent,
+    MdOptGroup
   ]
 })
 export class SharedModule { }
