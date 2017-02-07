@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { MaterialModule } from '@angular/material';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -28,6 +29,7 @@ import 'chart.js';
     HttpModule,
     NgbModule.forRoot(),
     MaterialModule.forRoot(),
+    FlexLayoutModule.forRoot(),
     CoreModule.forRoot(),
     SharedModule,
     AppRoutingModule,
