@@ -1,16 +1,12 @@
 <form (ngSubmit)="onSubmit()">
   <md-card-title class="mt-3">조회 결과</md-card-title>
   <md-card-content>
-    <div class="form-group float-sm-right">
-      <select [(ngModel)]="chart.type" name="chartType" class="custom-select">
-        <option *ngFor="let item of chartTypes | keys" [ngValue]="item.key">{{ item.value }}</option>
-      </select>
-      <label class="custom-control custom-checkbox">
-        <input type="checkbox" [(ngModel)]="stacked" name="chartStacked" class="custom-control-input">
-        <span class="custom-control-indicator"></span>
-        <span class="custom-control-description">누적</span>
-      </label>
-    </div>
+    <section class="my-1 float-sm-right">
+      <md-select placeholder="차트 종류" [(ngModel)]="chart.type" name="chartType">
+        <md-option *ngFor="let item of chartTypes | keys" [value]="item.key">{{ item.value }}</md-option>
+      </md-select>
+      <md-checkbox [(ngModel)]="stacked" name="chartStacked">누적</md-checkbox>
+    </section>
     <canvas baseChart [datasets]="chart.data.datasets" [labels]="chart.data.labels" [chartType]="chart.type" [options]="chart.options"></canvas>
   </md-card-content>
   <md-card-actions class="mx-auto">
