@@ -47,7 +47,10 @@ export class StatsResultComponent implements OnInit {
               stacked: value
           }],
           yAxes: [{
-              stacked: value
+              stacked: value,
+              ticks: {
+                max: value ? 100 : undefined
+              }
           }]
       }
     };

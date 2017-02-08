@@ -23,4 +23,5 @@ export class ChartDataSet {
 
   fill?: boolean;
   stacked?: boolean;
+  lineTension?: number;
 }

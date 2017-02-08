@@ -150,6 +150,7 @@ export class StatsComponent implements OnInit {
     };
 
     this.model.surveys.map(key => this.surveyInfo[key]).forEach((label, idx) => chart.data.datasets.push({
+      lineTension: 0,
       fill: false,
       label: label,
       data: chart.data.labels.map(key => statisticsMap[key][idx][this.targetData])
@@ -166,6 +167,7 @@ export class StatsComponent implements OnInit {
     };
 
     Object.keys(statisticsMap).forEach(key => chart.data.datasets.push({
+      lineTension: 0,
       fill: false,
       label: key,
       data: statisticsMap[key].map(x => x[this.targetData])
@@ -184,6 +186,7 @@ export class StatsComponent implements OnInit {
     const totalN = this.getTotalN(this.asArray(frequencyMap));
 
     Object.keys(frequencyMap).filter(Boolean).forEach(key => chart.data.datasets.push({
+      lineTension: 0,
       fill: false,
       label: surveyAnswerMap.codeMap.records[key] || key,
       data: frequencyMap[key].map((x, idx) => x / totalN[idx] * 100)
