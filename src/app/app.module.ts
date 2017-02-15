@@ -29,7 +29,7 @@ import 'chart.js';
     HttpModule,
     NgbModule.forRoot(),
     MaterialModule.forRoot(),
-    FlexLayoutModule.forRoot(),
+    FlexLayoutModule,
     CoreModule.forRoot(),
     SharedModule,
     AppRoutingModule,
