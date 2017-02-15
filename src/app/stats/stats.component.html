@@ -11,7 +11,7 @@
             <div class="flex-container my-3" fxLayout="row" fxLayoutAlign="center center">
               <div>
                 <md-select class="w-100" placeholder="조회 조건" [(ngModel)]="model.condition" name="condition" required>
-                  <md-option *ngFor="let item of personalInfo | keys" [value]="item.key">{{ item.value }}</md-option>
+                  <md-option *ngFor="let item of availableConditions" [value]="item.key">{{ item.value }}</md-option>
                 </md-select>
               </div>
               <div fxFlex="3 3 calc(10em + 0.5rem)" class="ml-2">

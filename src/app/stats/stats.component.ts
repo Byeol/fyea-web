@@ -22,6 +22,8 @@ export class KeyValueItem {
 export class StatsComponent implements OnInit {
   model: QueryModel = new QueryModel();
 
+  availableConditions: KeyValueItem[];
+  availableAnswers: String[];
   availableYears: Number[];
   codeMap: CodeMap;
   chart: Chart;
@@ -40,9 +42,12 @@ export class StatsComponent implements OnInit {
     this.handleBefore();
 
     try {
+      this.availableAnswers = await this.statsService.getAvailableAnswers();
+
       const codeMap = await this.statsService.getCodeMap();
       this.codeMap = this.updateCodeMap(codeMap);
       this.surveyMap = this.createSurveyMap(this.toArray(this.surveyInfo));
+      this.availableConditions = this.getAvailableConditions(this.toArray(this.personalInfo));
 
       const answerMap = await this.statsService.getAnswerMap('ADMISSION_YEAR');
       this.availableYears = answerMap.answers;
@@ -72,12 +77,20 @@ export class StatsComponent implements OnInit {
         return;
       }
 
+      if (!this.availableAnswers.includes(item.key)) {
+        return;
+      }
+
       const array = map.get(groupKey) || [];
       array.push(item);
       map.set(groupKey, array);
     });
 
     return map;
+  }
+
+  getAvailableConditions(conditions: KeyValueItem[]): KeyValueItem[] {
+    return conditions.filter(item => this.availableAnswers.includes(item.key));
   }
 
   toArray(obj: Object): KeyValueItem[] {
