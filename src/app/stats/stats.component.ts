@@ -160,7 +160,7 @@ export class StatsComponent implements OnInit {
   createAlternativeStatisticsChart({ statisticsMap }): LineChart {
     const chart = new LineChart();
     chart.data = {
-      labels: Object.keys(statisticsMap),
+      labels: Object.keys(statisticsMap).sort(this.compareLabels),
       datasets: []
     };
 
@@ -181,7 +181,7 @@ export class StatsComponent implements OnInit {
       datasets: []
     };
 
-    Object.keys(statisticsMap).forEach(key => chart.data.datasets.push({
+    Object.keys(statisticsMap).sort(this.compareLabels).forEach(key => chart.data.datasets.push({
       lineTension: 0,
       fill: false,
       label: key,
@@ -223,6 +223,16 @@ export class StatsComponent implements OnInit {
       });
       return r;
     }, []);
+  }
+
+  private compareLabels(a, b) {
+    if (a === '전체') {
+      return 1;
+    }
+    if (b === '전체') {
+      return -1;
+    }
+    return a.localeCompare(b);
   }
 
   handleBefore(): void {
