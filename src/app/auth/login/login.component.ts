@@ -25,15 +25,14 @@ export class LoginComponent {
     this.handleBefore();
 
     try {
-      const status = await this.apiService.login(this.model);
-
-      if (!status) {
-        throw new Error();
-      }
-
+      await this.apiService.login(this.model);
       this.handleSuccess();
     } catch (e) {
-      this.handleError();
+      if (e === 'UNAUTHORIZED') {
+        this.handleUnauthorized();
+      } else {
+        this.handleError();
+      }
     } finally {
       this.handleAfter();
     }
@@ -63,7 +62,14 @@ export class LoginComponent {
   private handleError(): void {
     this.alert = {
       type: 'danger',
-      message: '로그인에 실패했습니다.'
+      message: '오류가 발생했습니다. 다시 시도하세요.'
+    };
+  }
+
+  private handleUnauthorized(): void {
+    this.alert = {
+      type: 'warning',
+      message: '잘못된 비밀번호입니다. 다시 시도하세요.'
     };
   }
 }

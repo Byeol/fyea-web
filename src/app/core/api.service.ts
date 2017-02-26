@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { userUrl } from '../api-config';
 import { AuthService } from '../auth/auth.service';
@@ -17,7 +17,10 @@ export class ApiService {
     return this.isAuthenticated()
       .then(status => {
         this.authService.isAuthenticated = status;
-        return status;
+
+        if (!status) {
+          return Promise.reject('UNAUTHORIZED');
+        }
       });
   }
 
@@ -35,8 +38,8 @@ export class ApiService {
     return this.http
       .get(userUrl, options)
       .toPromise()
-      .then(() => true)
-      .catch(() => false);
+      .then((res: Response) => true)
+      .catch((res: Response) => (res.status === 401) ? false : Promise.reject(res));
   }
 
   get headers(): Headers {
