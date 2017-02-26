@@ -107,8 +107,11 @@ export class StatsService {
   }
 
   private downloadFile(blob: Blob) {
-    const url = window.URL.createObjectURL(blob);
-    window.open(url);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      window.location.href = reader.result;
+    };
+    reader.readAsDataURL(blob);
   }
 
   private handleError(error: any): Promise<any> {
