@@ -1,6 +1,6 @@
 import { FyeaWebPage } from './app.po';
 
-describe('fyea-web App', function() {
+describe('fyea-web App', () => {
   let page: FyeaWebPage;
 
   beforeEach(() => {
