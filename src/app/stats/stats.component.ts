@@ -21,6 +21,7 @@ export class KeyValueItem {
 })
 export class StatsComponent implements OnInit {
   model: QueryModel = new QueryModel();
+  _idStartsWith: string[];
 
   availableConditions: KeyValueItem[];
   availableAnswers: String[];
@@ -28,7 +29,7 @@ export class StatsComponent implements OnInit {
   codeMap: CodeMap;
   chart: Chart;
   targetData = 'mean';
-  _statsData: StatisticsData;
+  _statsData: Map<String, StatisticsData>;
   surveyMap: Map<String, Array<KeyValueItem>>;
   stacked: boolean;
   alternative = true;
@@ -104,6 +105,15 @@ export class StatsComponent implements OnInit {
     return keys;
   }
 
+  get idStartsWith() {
+    return this._idStartsWith;
+  }
+
+  set idStartsWith(value) {
+    this._idStartsWith = value;
+    this.model.idStartsWith = value;
+  }
+
   get personalInfo() {
     return this.codeMap.personalInfo.records;
   }
@@ -117,7 +127,15 @@ export class StatsComponent implements OnInit {
     this.statsData = null;
 
     try {
-      this.statsData = await this.statsService.queryStats(this.model);
+      const statsDataMap = new Map();
+
+      for (const id of this.idStartsWith) {
+        this.model.idStartsWith = [id];
+        statsDataMap.set(id, await this.statsService.queryStats(this.model) as StatisticsData);
+      }
+
+      this.model.idStartsWith = this.idStartsWith;
+      this.statsData = statsDataMap;
     } catch (e) {
       this.handleError();
     } finally {
@@ -139,37 +157,46 @@ export class StatsComponent implements OnInit {
     return this.model.surveys && this.model.surveys.length === 1;
   }
 
-  createChart(data: StatisticsData, alternative: boolean): Chart {
+  get isMultipleYears() {
+    return this.idStartsWith && this.idStartsWith.length > 1;
+  }
+
+  createChart(data: Map<String, StatisticsData>, alternative: boolean): Chart {
     if (data === null || data === undefined) {
       return null;
     }
 
-    if (data.hasOwnProperty('frequencyMap')) {
-      return this.createFrequencyChart(data as FrequencyStatisticsData);
+    if (this.mapToArray(data)[0].hasOwnProperty('frequencyMap')) {
+      return this.createFrequencyChart(this.mapToArray(data)[0] as FrequencyStatisticsData);
     }
 
-    if (data.hasOwnProperty('statisticsMap')) {
+    if (this.mapToArray(data)[0].hasOwnProperty('statisticsMap')) {
       if (alternative) {
-        return this.createAlternativeStatisticsChart(data as DescriptiveStatisticsData);
+        return this.createAlternativeStatisticsChart(data as Map<String, DescriptiveStatisticsData>);
       }
 
-      return this.createStatisticsChart(data as DescriptiveStatisticsData);
+      return this.createStatisticsChart(this.mapToArray(data)[0] as DescriptiveStatisticsData);
     }
+    return null;
   }
 
-  createAlternativeStatisticsChart({ statisticsMap }): LineChart {
+  getConditions(data: Map<String, DescriptiveStatisticsData>) {
+    return this.mergeArray(this.mapToArray(data).map(x => Object.keys(x.statisticsMap))).sort(this.compareLabels);
+  }
+
+  createAlternativeStatisticsChart(data: Map<String, DescriptiveStatisticsData>): LineChart {
     const chart = new LineChart();
     chart.data = {
-      labels: Object.keys(statisticsMap).sort(this.compareLabels),
+      labels: this.getConditions(data),
       datasets: []
     };
 
-    this.model.surveys.map(key => this.surveyInfo[key]).forEach((label, idx) => chart.data.datasets.push({
+    data.forEach(({ statisticsMap }, dataKey) => this.model.surveys.map(key => this.surveyInfo[key]).forEach((label, idx) => chart.data.datasets.push({
       lineTension: 0,
       fill: false,
-      label: label,
+      label: `(${dataKey}) ${label}`,
       data: chart.data.labels.map(key => statisticsMap[key][idx][this.targetData])
-    }));
+    })));
 
     return chart;
   }
@@ -210,10 +237,18 @@ export class StatsComponent implements OnInit {
     return chart;
   }
 
-  asArray(map: Object) {
+  private asArray(map: Object) {
     const list = [];
     Object.keys(map).filter(Boolean).forEach(key => list.push(map[key]));
     return list;
+  }
+
+  private mergeArray<T>(arr: T[][]): T[] {
+    return Array.from(new Set([].concat(...arr)));
+  }
+
+  private mapToArray<K, V>(map: Map<K, V>): Array<V> {
+    return Array.from(map.values());
   }
 
   getTotalN(list: number[][]) {

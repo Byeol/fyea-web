@@ -23,13 +23,13 @@
                 </md-select>
               </div>
             </div>
-            <md-select class="w-100 my-3" multiple placeholder="조회 대상 학번" [(ngModel)]="model.idStartsWith" name="idStartsWith">
+            <md-select class="w-100 my-3" multiple placeholder="조회 대상 학번" [(ngModel)]="idStartsWith" name="idStartsWith" required>
               <md-option *ngFor="let year of availableYears" [value]="year">{{ year }}</md-option>
             </md-select>
-            <div *ngIf="isFrequencyAvailable">
+            <div *ngIf="isFrequencyAvailable && !isMultipleYears">
               <md-checkbox [(ngModel)]="model.frequency" name="frequency">결과값을 비율로 표시</md-checkbox>
             </div>
-            <div *ngIf="!isFrequencyAvailable || !model.frequency">
+            <div *ngIf="(!isFrequencyAvailable || !model.frequency) && !isMultipleYears">
               <md-checkbox [(ngModel)]="alternative" name="alternative">조회 조건을 X축으로 사용</md-checkbox>
             </div>
           </md-card-content>

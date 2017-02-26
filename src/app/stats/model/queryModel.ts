@@ -1,6 +1,6 @@
 export class QueryModel {
   condition: string;
   surveys: string[];
-  idStartsWith?: string;
+  idStartsWith?: string[];
   frequency: boolean;
 }
