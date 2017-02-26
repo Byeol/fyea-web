@@ -1,11 +1,15 @@
-<md-card class="example-card">
-  <md-card-title>시작</md-card-title>
-  <md-card-content>
-    <p>FYEA 프로그램에 오신 것을 환영합니다.</p>
-  </md-card-content>
-  <md-card-actions>
-    <a md-button color="primary" *ngIf="!isAuthenticated" routerLink="/login">로그인</a>
-    <a md-button color="primary" *ngIf="isAuthenticated" routerLink="/stats">설문결과 조회</a>
-  </md-card-actions>
-</md-card>
-
+<div class="flex-container" fxLayout="row" fxLayoutAlign="center center">
+  <div class="text-center" fxFlex="50%">
+    <md-card class="my-3">
+      <md-card-title>University College Data System</md-card-title>
+      <md-card-content>
+        <p>연세대학교 학부대학 자료분석 시스템에 오신 것을 환영합니다.</p>
+      </md-card-content>
+      <md-card-actions>
+        <a md-button color="primary" *ngIf="!isAuthenticated" routerLink="/login">로그인</a>
+        <a md-button color="primary" *ngIf="isAuthenticated" routerLink="/stats">설문결과 조회</a>
+      </md-card-actions>
+    </md-card>
+    <img class="brand-logo" src="assets/logo.jpg">
+  </div>
+</div>
