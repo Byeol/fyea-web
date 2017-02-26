@@ -35,6 +35,7 @@ export class StatsComponent implements OnInit {
 
   isLoading = false;
   alert: AlertData;
+  activeTabIndex = 0;
 
   constructor(private statsService: StatsService) { }
 
@@ -131,6 +132,7 @@ export class StatsComponent implements OnInit {
   set statsData(value) {
     this._statsData = value;
     this.chart = this.createChart(this.statsData, this.alternative);
+    this.activeTabIndex = 1;
   }
 
   get isFrequencyAvailable() {

@@ -3,7 +3,7 @@
 
 <div *ngIf="codeMap">
   <md-card>
-    <md-tab-group>
+    <md-tab-group [(selectedIndex)]="activeTabIndex">
       <md-tab label="조회조건 선택">
         <form (ngSubmit)="onSubmit()" #queryForm="ngForm">
           <md-card-title class="mt-3 mb-4">조회조건 선택</md-card-title>
@@ -38,11 +38,11 @@
           </md-card-actions>
         </form>
       </md-tab>
-      <md-tab *ngIf="chart" label="조회 결과">
-        <app-stats-result [chart]="chart" [stack]="stacked" (before)="handleBefore()" (success)="handleAfter()" (error)="handleError() && handleAfter()"></app-stats-result>
+      <md-tab label="조회 결과" [disabled]="!chart">
+        <app-stats-result *ngIf="chart" [chart]="chart" [stack]="stacked" (before)="handleBefore()" (success)="handleAfter()" (error)="handleError() && handleAfter()"></app-stats-result>
       </md-tab>
-      <md-tab *ngIf="chart" label="내보내기">
-        <app-stats-export [model]="model" [chart]="chart" [codeMap]="codeMap" (before)="handleBefore()" (success)="handleAfter()" (error)="handleError() && handleAfter()"></app-stats-export>
+      <md-tab label="내보내기" [disabled]="!chart">
+        <app-stats-export *ngIf="chart" [model]="model" [chart]="chart" [codeMap]="codeMap" (before)="handleBefore()" (success)="handleAfter()" (error)="handleError() && handleAfter()"></app-stats-export>
       </md-tab>
     </md-tab-group>
   </md-card>
