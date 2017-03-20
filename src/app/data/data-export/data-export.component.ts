@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { saveAs } from 'file-saver';
 
 import { DataService } from '../data.service';
 
@@ -16,6 +17,7 @@ export class DataExportComponent {
   onSubmit() {
     this.before.emit();
     this.dataService.exportData()
+      .then(blob => saveAs(blob, `UCDS_내보낸 데이터.xlsx`))
       .then(() => this.success.emit())
       .catch(() => this.error.emit());
   }

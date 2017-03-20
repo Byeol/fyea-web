@@ -64,7 +64,7 @@ export class StatsService {
       .catch(this.handleError);
   }
 
-  exportStats(queryModel: QueryModel): Promise<Response> {
+  exportStats(queryModel: QueryModel): Promise<Blob> {
     const options = new RequestOptions({
       headers: this.headers,
       responseType: ResponseContentType.Blob
@@ -73,12 +73,11 @@ export class StatsService {
     return this.http
       .post(`${statsUrl}/export`, JSON.stringify(queryModel), options)
       .map(this.extractContent)
-      .map(this.downloadFile)
       .toPromise()
       .catch(this.handleError);
   }
 
-  queryChart(chartData: ChartData): Promise<Response> {
+  queryChart(chartData: ChartData): Promise<Blob> {
     const options = new RequestOptions({
       headers: this.headers,
       responseType: ResponseContentType.Blob
@@ -87,7 +86,6 @@ export class StatsService {
     return this.http
       .post(`${statsUrl}/chart`, JSON.stringify(chartData), options)
       .map(this.extractContent)
-      .map(this.downloadFile)
       .toPromise()
       .catch(this.handleError);
   }
@@ -104,14 +102,6 @@ export class StatsService {
   private extractContent(res: Response) {
     const blob: Blob = res.blob();
     return blob;
-  }
-
-  private downloadFile(blob: Blob) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      window.location.href = reader.result;
-    };
-    reader.readAsDataURL(blob);
   }
 
   private handleError(error: any): Promise<any> {

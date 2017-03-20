@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnChanges, OnInit } from '@angular/core';
+import { saveAs } from 'file-saver';
 
 import { StatsService } from '../stats.service';
 import { BarChart, LineChart, Chart, ChartData, ChartOptions } from '../model/chartModel';
@@ -36,6 +37,7 @@ export class StatsResultComponent implements OnInit, OnChanges {
   onSubmit() {
     this.before.emit();
     this.statsService.queryChart(this.chart.data)
+      .then(blob => saveAs(blob, `UCDS_차트 데이터.xlsx`))
       .then(() => this.success.emit())
       .catch(() => this.error.emit());
   }

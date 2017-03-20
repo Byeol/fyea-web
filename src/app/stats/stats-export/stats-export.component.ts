@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { saveAs } from 'file-saver';
 
 import { StatsService } from '../stats.service';
 import { CodeMap } from '../model/codeMap';
@@ -23,8 +24,14 @@ export class StatsExportComponent {
   onSubmit() {
     this.before.emit();
     this.statsService.exportStats(this.model)
+      .then(blob => saveAs(blob, this.fileName))
       .then(() => this.success.emit())
       .catch(() => this.error.emit());
+  }
+
+  get fileName(): string {
+    const surveys = this.selectedSurveys.length === 1 ? `${this.selectedSurveys}` : '설문';
+    return `UCDS_${this.model.idStartsWith}_${this.selectedCondition}_${surveys}.xlsx`;
   }
 
   get selectedCondition() {

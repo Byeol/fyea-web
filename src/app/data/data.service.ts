@@ -35,7 +35,7 @@ export class DataService {
       .catch(this.handleError);
   }
 
-  exportData(): Promise<Response> {
+  exportData(): Promise<Blob> {
     const options = new RequestOptions({
       headers: this.headers,
       responseType: ResponseContentType.Blob
@@ -44,7 +44,6 @@ export class DataService {
     return this.http
       .get(`${dataUrl}/export`, options)
       .map(this.extractContent)
-      .map(this.downloadFile)
       .toPromise()
       .catch(this.handleError);
   }
@@ -84,14 +83,6 @@ export class DataService {
   private extractContent(res: Response) {
     const blob: Blob = res.blob();
     return blob;
-  }
-
-  private downloadFile(blob: Blob) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      window.location.href = reader.result;
-    };
-    reader.readAsDataURL(blob);
   }
 
   private handleError(error: any): Promise<any> {
